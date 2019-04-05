@@ -41,7 +41,7 @@ pad_vec_idx = 1685894 # 0-based index of the last row of the embedding matrix (f
 
 # parameters
 num_walks = 5
-walk_length = 10
+walk_length = 4
 max_doc_size = 70 # maximum number of 'sentences' (walks) in each pseudo-document
 
 path_root = '/home/lucas/Desktop/MVA/Altegrad/Kaggle'

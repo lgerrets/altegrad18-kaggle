@@ -49,10 +49,10 @@ def bidir_gru(my_seq,n_units,is_GPU):
 # = = = = = hyper-parameters = = = = =
 
 n_units = 50
-drop_rate = 0.5
-batch_size = 96
+drop_rate = 0.2
+batch_size = 64
 nb_epochs = 10
-my_optimizer = 'adam'
+my_optimizer = 'rmsprop'
 my_patience = 4
 
 # = = = = = data loading = = = = =
