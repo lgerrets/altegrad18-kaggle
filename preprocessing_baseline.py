@@ -35,6 +35,38 @@ def generate_walks(graph,num_walks,walk_length):
             walks.append(walk)
     return walks
 
+def random_walk_node2vec(graph,node,walk_length,shortest_path_lengths):
+    p,q = 1,2 # 1,2 captures the node roles
+    walk = [node]
+    neighbors = graph.neighbors(node)
+    walk.append(random.choice(list(neighbors)))
+    for i in range(1,walk_length):
+        neighbors = list(graph.neighbors(walk[i]))
+        path_lengths = np.array([shortest_path_lengths[walk[i-1]][neighbor] for neighbor in neighbors])
+        alphas = np.empty(len(neighbors))
+        alphas[path_lengths == 0] = 1/p
+        alphas[path_lengths == 1] = 1
+        alphas[path_lengths == 2] = 1/q
+        alphas /= np.sum(alphas)
+        walk.append(np.random.choice(neighbors, p=alphas))
+    return walk
+
+def generate_walks_node2vec(graph,num_walks,walk_length):
+    graph_nodes = graph.nodes()
+    n_nodes = len(graph_nodes)
+    walks = []
+    shortest_path_lengths = nx.shortest_path_length(graph)
+    shortest_path_lengths = [[source,targets] for source,targets in shortest_path_lengths]
+    idx = [source for source,targets in shortest_path_lengths]
+    dicts = [targets for source,targets in shortest_path_lengths]
+    shortest_path_lengths = dict(zip(idx,dicts))
+    for i in range(num_walks):
+        nodes = np.random.permutation(graph_nodes)
+        for j in range(n_nodes):
+            walk = random_walk_node2vec(graph, nodes[j], walk_length, shortest_path_lengths)
+            walks.append(walk)
+    return walks
+
 # = = = = = = = = = = = = = = =
 
 pad_vec_idx = 1685894 # 0-based index of the last row of the embedding matrix (for zero-padding)
@@ -59,7 +91,7 @@ def main():
     docs = []
     for idx,edgelist in enumerate(edgelists):
         g = nx.read_edgelist(path_to_data + 'edge_lists/' + edgelist) # construct graph from edgelist
-        doc = generate_walks(g,num_walks,walk_length) # create the pseudo-document representation of the graph
+        doc = generate_walks_node2vec(g,num_walks,walk_length) # create the pseudo-document representation of the graph
         docs.append(doc)
         
         if idx % round(len(edgelists)/10) == 0:

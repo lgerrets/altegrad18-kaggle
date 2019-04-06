@@ -122,7 +122,7 @@ for tgt in range(4):
     doc_att_vec,sent_att_coeffs = AttentionWithContext(return_coefficients=True)(doc_sa)
     doc_att_vec_dr = Dropout(drop_rate)(doc_att_vec)
     
-    preds = Dense(units=1,activation='sigmoid')(doc_att_vec_dr)
+    preds = Dense(units=1,activation='linear')(doc_att_vec_dr)
     
     model = Model(doc_ints,preds)
     
