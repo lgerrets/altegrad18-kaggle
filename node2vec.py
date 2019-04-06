@@ -43,9 +43,7 @@ class Graph():
 		G = self.G
 		walks = []
 		nodes = list(G.nodes())
-		print 'Walk iteration:'
 		for walk_iter in range(num_walks):
-			print str(walk_iter+1), '/', str(num_walks)
 			random.shuffle(nodes)
 			for node in nodes:
 				walks.append(self.node2vec_walk(walk_length=walk_length, start_node=node))
@@ -146,4 +144,4 @@ def alias_draw(J, q):
 	if np.random.rand() < q[kk]:
 	    return kk
 	else:
-return J[kk]
+		return J[kk]
