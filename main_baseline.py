@@ -110,7 +110,7 @@ for tgt in range(4):
     doc_att_vec_dr = Dropout(drop_rate)(doc_att_vec)
 
     preds = Dense(units=1,
-                  activation='sigmoid')(doc_att_vec_dr)
+                  activation='linear')(doc_att_vec_dr)
     model = Model(doc_ints,preds)
 
     model.compile(loss='mean_squared_error',
@@ -118,6 +118,10 @@ for tgt in range(4):
                   metrics=['mae'])
 
     print('model compiled')
+
+    print(sent_encoder.summary())
+
+    print(model.summary())
 
     # = = = = = training = = = = =
 
