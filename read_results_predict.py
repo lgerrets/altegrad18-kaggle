@@ -42,8 +42,8 @@ def bidir_gru(my_seq,n_units,is_GPU):
 
 # = = = = = = = = = = = = = = =
 
-docs = np.load(path_to_data + 'documents.npy')
 embeddings = np.load(path_to_data + 'embeddings.npy')
+doc_paths = ['documents_w6m110.npy','documents_w6m110.npy','documents_w10m70.npy','documents_w6m110.npy']
 
 with open(path_to_data + 'train_idxs.txt', 'r') as file:
     train_idxs = file.read().splitlines()
@@ -53,8 +53,6 @@ with open(path_to_data + 'test_idxs.txt', 'r') as file:
 
 train_idxs = [int(elt) for elt in train_idxs]
 test_idxs = [int(elt) for elt in test_idxs]
-
-docs_test = docs[test_idxs,:,:]
 
 # = = = = = TRAINING RESULTS = = = = = 
 
@@ -86,6 +84,9 @@ for tgt in range(4):
     
     print('* * * * * * *',tgt,'* * * * * * *')
     
+    docs = np.load(path_to_data + doc_paths[tgt])
+    docs_test = docs[test_idxs,:,:]
+
     # * * * mean baseline * * * 
     
     with open(path_to_data + 'targets/train/target_' + str(tgt) + '.txt', 'r') as file:
