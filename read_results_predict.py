@@ -112,7 +112,8 @@ for tgt in range(4):
     
     sent_wv_dr = Dropout(drop_rate)(sent_wv)
     sent_wa = bidir_gru(sent_wv_dr,n_units,is_GPU)
-    sent_att_vec,word_att_coeffs = AttentionWithContext(return_coefficients=True)(sent_wa)
+    sent_wa2 = bidir_gru(sent_wa,n_units,is_GPU)
+    sent_att_vec,word_att_coeffs = AttentionWithContext(return_coefficients=True)(sent_wa2)
     sent_att_vec_dr = Dropout(drop_rate)(sent_att_vec)                      
     sent_encoder = Model(sent_ints,sent_att_vec_dr)
     
