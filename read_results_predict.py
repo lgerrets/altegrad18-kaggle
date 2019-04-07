@@ -122,9 +122,8 @@ for tgt in range(4):
     doc_sa = bidir_gru(sent_att_vecs_dr,n_units,is_GPU)
     doc_sa2 = bidir_gru(doc_sa,n_units,is_GPU)
     doc_att_vec,sent_att_coeffs = AttentionWithContext(return_coefficients=True)(doc_sa2)
-    doc_att_vec_dr = Dropout(drop_rate)(doc_att_vec)
     
-    preds = Dense(units=1,activation='linear')(doc_att_vec_dr)
+    preds = Dense(units=1,activation='linear')(doc_att_vec)
     
     model = Model(doc_ints,preds)
     

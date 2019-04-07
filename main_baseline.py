@@ -50,8 +50,8 @@ def bidir_gru(my_seq,n_units,is_GPU):
 
 n_units = 50
 drop_rate = 0.2
-batch_size = 64
-nb_epochs = 10
+batch_sizes = [48,48,16,12]
+nb_epochs = 30
 my_optimizer = 'rmsprop'
 my_patience = 4
 
@@ -109,10 +109,9 @@ for tgt in range(4):
     doc_sa = bidir_gru(sent_att_vecs_dr,n_units,is_GPU)
     doc_sa2 = bidir_gru(doc_sa,n_units,is_GPU)
     doc_att_vec,sent_att_coeffs = AttentionWithContext(return_coefficients=True)(doc_sa2)
-    doc_att_vec_dr = Dropout(drop_rate)(doc_att_vec)
 
     preds = Dense(units=1,
-                  activation='linear')(doc_att_vec_dr)
+                  activation='linear')(doc_att_vec)
     model = Model(doc_ints,preds)
 
     model.compile(loss='mean_squared_error',
@@ -144,7 +143,7 @@ for tgt in range(4):
 
     model.fit(docs_train, 
               target_train,
-              batch_size = batch_size,
+              batch_size = batch_sizes[tgt],
               epochs = nb_epochs,
               validation_data = (docs_val,target_val),
               callbacks = my_callbacks)
