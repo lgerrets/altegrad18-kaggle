@@ -42,8 +42,9 @@ def bidir_gru(my_seq,n_units,is_GPU):
 
 # = = = = = = = = = = = = = = =
 
-embeddings = np.load(path_to_data + 'embeddings.npy')
+embeddings = np.load(path_to_data + 'embeddings_new.npy')
 doc_paths = ['documents_w6m110.npy','documents_w6m110.npy','documents_w10m70.npy','documents_w6m110.npy']
+add_bidir = [1,1,0,1]
 
 with open(path_to_data + 'train_idxs.txt', 'r') as file:
     train_idxs = file.read().splitlines()
@@ -113,7 +114,10 @@ for tgt in range(4):
     
     sent_wv_dr = Dropout(drop_rate)(sent_wv)
     sent_wa = bidir_gru(sent_wv_dr,n_units,is_GPU)
-    sent_wa2 = bidir_gru(sent_wa,n_units,is_GPU)
+    if add_bidir[tgt]:
+      sent_wa2 = bidir_gru(sent_wa,n_units,is_GPU)
+    else:
+      sent_wa2 = sent_wa
     sent_att_vec,word_att_coeffs = AttentionWithContext(return_coefficients=True)(sent_wa2)
     sent_att_vec_dr = Dropout(drop_rate)(sent_att_vec)                      
     sent_encoder = Model(sent_ints,sent_att_vec_dr)
@@ -121,7 +125,10 @@ for tgt in range(4):
     doc_ints = Input(shape=(docs_test.shape[1],docs_test.shape[2],))
     sent_att_vecs_dr = TimeDistributed(sent_encoder)(doc_ints)
     doc_sa = bidir_gru(sent_att_vecs_dr,n_units,is_GPU)
-    doc_sa2 = bidir_gru(doc_sa,n_units,is_GPU)
+    if add_bidir[tgt]:
+      doc_sa2 = bidir_gru(doc_sa,n_units,is_GPU)
+    else:
+      doc_sa2 = doc_sa
     doc_att_vec,sent_att_coeffs = AttentionWithContext(return_coefficients=True)(doc_sa2)
     
     preds = Dense(units=1,activation='linear')(doc_att_vec)

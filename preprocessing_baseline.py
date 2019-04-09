@@ -36,7 +36,7 @@ def generate_walks(graph,num_walks,walk_length):
     return walks
 
 def random_walk_node2vec(graph,node,walk_length,shortest_path_lengths):
-    p,q = 1,2 # 1,2 captures the node roles
+    p,q = 1,0.5 # 1,2 captures the node roles
     walk = [node]
     neighbors = graph.neighbors(node)
     walk.append(random.choice(list(neighbors)))
@@ -73,7 +73,7 @@ pad_vec_idx = 1685894 # 0-based index of the last row of the embedding matrix (f
 
 # parameters
 num_walks = 5
-walk_length = 6
+walk_length = 4
 max_doc_size = 110 # maximum number of 'sentences' (walks) in each pseudo-document
 
 path_root = '/home/lucas/Desktop/MVA/Altegrad/Kaggle'
@@ -91,7 +91,7 @@ def main():
     docs = []
     for idx,edgelist in enumerate(edgelists):
         g = nx.read_edgelist(path_to_data + 'edge_lists/' + edgelist) # construct graph from edgelist
-        doc = generate_walks_node2vec(g,num_walks,walk_length) # create the pseudo-document representation of the graph
+        doc = generate_walks(g,num_walks,walk_length) # create the pseudo-document representation of the graph
         docs.append(doc)
         
         if idx % round(len(edgelists)/10) == 0:
